@@ -1,0 +1,25 @@
+.form__filter{
+    gap: 20px;
+
+    box-sizing: border-box;
+    width: 500px;
+    height: 150px;
+    background: rgba(217, 217, 217, 0.58);
+    border: 1px solid white;
+    box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(6px);
+    border-radius: 17px;
+    padding: 30px 30px;
+    transition: all 0.5s;
+    display: flex;
+    flex-direction: column;
+    font-weight: bolder;
+    color: black;
+
+}
+
+.filter__input{
+    border-radius: 17px;
+    padding: 10px 10px;
+    cursor: pointer;
+}
