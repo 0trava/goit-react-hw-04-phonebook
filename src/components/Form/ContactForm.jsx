@@ -1,46 +1,44 @@
 import PropTypes from 'prop-types';
 import css from "./ContactForm.module.css"; // підключення стилів на картку
-import { Component } from 'react'; // імпорт базового класу React Component
+import {useState} from 'react'; // пакети для роботи зі станом
 
-export class ContactForm extends Component {
+export const ContactForm =({addContact})=> {
 
-    state = {
-      name: '',
-      number: '',
-    };
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
 
     // INPUT - зберігаємо данні при вводі текста 
-    handleChange = (event) => {
+    const handleChange = (event) => {
       const {name, value} = event.currentTarget;
-      this.setState({[name]: value});
-    }
+      if (name === "name") {setName(value);}
+      if (name === "number") {setNumber(value);}
+    };
 
     // РЕНДНЕРІНГ секції 
-    render() {
       return (
         <>
         <form className={css.form} 
                   onSubmit={evt => {
                     evt.preventDefault(); // відміна перезавантаження сторінки
-                    this.props.addContact(this.state);// Передача стану компонента до addContact як (props) з батьківського компоненту.
-                    this.setState( {name: '', number: ''}); // очищення вмісту форми
+                    addContact({ name, number }); // Передача стану компонента до addContact як (props) з батьківського компоненту.
+                    setName("") // очищення вмісту форми
+                    setNumber(""); // очищення вмісту форми
                   }}>
         <label htmlFor="name">Name</label>
         <input
-          value={this.state.name}
-          onChange={this.handleChange}
+          value={name}
+          onChange={handleChange}
           className={css.form__input}
           type="text"
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-        />
+          required/>
         <label htmlFor="number">Number</label>
         <input
-          value={this.state.number}
-          onChange={this.handleChange}
+          value={number}
+          onChange={handleChange}
           className={css.form__input}
           type="tel"
           name="number"
@@ -52,10 +50,9 @@ export class ContactForm extends Component {
         <button className={css.form__btn} type="submit">Add contact</button>
         </form>
         </>
-    );
-    }
-    
-  }
+        
+    ); }
+
   
   ContactForm.propTypes = {
     addContact: PropTypes.func.isRequired, // функція
