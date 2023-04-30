@@ -9,48 +9,54 @@ import {Filter} from "./Filter/Filter";
 import css from "./App.module.css"; // підключення стилів
 
 export const App = () => {
-// ДАННІ - Ввідні данні по ТЗ 
-const initialContacts = [
-  { id: nanoid(), name: 'Rosie Simpson', number: '459-12-56' },
-  { id: nanoid(), name: 'Hermione Kline', number: '443-89-12' },
-  { id: nanoid(), name: 'Eden Clements', number: '645-17-79' },
-  { id: nanoid(), name: 'Annie Copeland', number: '227-91-26' },
-];
-const CONTACTS = 'contacts'; // ключ для localStorage
+  // ДАННІ - для першого завантаження
+  const initialContacts = [
+    { id: nanoid(), name: 'Rosie Simpson', number: '459-12-56' },
+    { id: nanoid(), name: 'Hermione Kline', number: '443-89-12' },
+    { id: nanoid(), name: 'Eden Clements', number: '645-17-79' },
+    { id: nanoid(), name: 'Annie Copeland', number: '227-91-26' },
+  ];
 
-  // стан для контактів
+
+  const CONTACTS = 'contacts'; // ключ для localStorage
+  const [filter, setFilter] = useState(''); // Хук для filter
   const [contacts, setContacts] = useState(
     () => JSON.parse(window.localStorage.getItem(CONTACTS)) ?? initialContacts // якщо в localStorage є контакти, то використовуємо їх, якщо ні, то використовуємо початковий масив
   );
-  const [filter, setFilter] = useState('');
+
 
 
 
   // componentDidUpdate
   useEffect(() => {
     window.localStorage.setItem(CONTACTS, JSON.stringify(contacts));
+    console.log(JSON.parse(window.localStorage.getItem(CONTACTS)));
+    // filterOn(contacts);
   }, [contacts]); // зберігаємо контакти в localStorage тільки коли змінюється масив контактів
 
 
 
-// INPUT - зберігаємо данні при вводі текста в input
+// INPUT Filter - зберігаємо данні при вводі текста в input
 const handleChange = (event) => {
       setFilter(event.currentTarget.value)
     };
 
 // ADD CONTACT - додаємо контакт до масиву
 const addContact = ({ name, number }) => {
-    let newId = 'id-' + nanoid(3); // генеруємо id
-    let list = contacts; // беремо данны масиву
+  let newId = 'id-' + nanoid(3); // генеруємо id
 
-    // ПЕРЕВІРКА - чи такий контакт вже існує
-    if (list.some(value => value.name.toLocaleLowerCase() === name.toLocaleLowerCase())){
-      alert(`"${name}" is already in contacts`); // повідомлення, що такий контакт вже існує
-    } else {
-      list.push({id:newId, name: name, number: number}); // додаємо до масиву данних
-    }
-    return setContacts(list); // ререндиримо сторінку
+  if (contacts.some(value => value.name.toLocaleLowerCase() === name.toLocaleLowerCase())) {
+    // якщо є, то виводимо повідомлення
+    alert(`${name} is alredy in contacts`); 
+  } else {
+    // повертаємо новий масив контактів setContacts
+    setContacts(old => { const list = [...old];
+      list.push({ id: newId, name: name, number: number,});
+      return list; 
+    });
   }
+}
+
 
 
 
@@ -64,14 +70,14 @@ const onClickDelete = e => {
 
 // FILTER - фільтруємо введені данні 
 const filterOn = () => {
-
+  console.log(contacts);
   // новий масив, який містить всі контакти, що містять рядок пошуку
   const filteredContacts = contacts.filter(
-    contact => contact.name.toLowerCase().includes(filter.toLowerCase()) // перевіряємо чи є в імені контакту введене значення фільтра
+    contact => contact.name.toLowerCase().includes(filter.toLowerCase())
   );
   return filteredContacts;
-
 }
+
 
 // РЕНДНЕРІНГ сторінки
 
@@ -85,6 +91,3 @@ const filterOn = () => {
         <ContactsList onClickDelete={onClickDelete} contacts={filterOn()}></ContactsList>
       </div>
   );};
-
-
-
