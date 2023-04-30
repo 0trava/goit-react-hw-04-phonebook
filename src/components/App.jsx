@@ -9,6 +9,8 @@ import {Filter} from "./Filter/Filter";
 import css from "./App.module.css"; // підключення стилів
 
 export const App = () => {
+
+
   // ДАННІ - для першого завантаження
   const initialContacts = [
     { id: nanoid(), name: 'Rosie Simpson', number: '459-12-56' },
@@ -17,22 +19,17 @@ export const App = () => {
     { id: nanoid(), name: 'Annie Copeland', number: '227-91-26' },
   ];
 
-
+  // ЗМІННІ і ХУКИ
   const CONTACTS = 'contacts'; // ключ для localStorage
   const [filter, setFilter] = useState(''); // Хук для filter
-  const [contacts, setContacts] = useState(
-    () => JSON.parse(window.localStorage.getItem(CONTACTS)) ?? initialContacts // якщо в localStorage є контакти, то використовуємо їх, якщо ні, то використовуємо початковий масив
-  );
+  const [contacts, setContacts] = useState(() => JSON.parse(window.localStorage.getItem(CONTACTS)) ?? initialContacts); // якщо в localStorage є контакти, то використовуємо їх, якщо ні, то використовуємо початковий масив
 
 
-
-
-  // componentDidUpdate
+  // componentDidUpdate contacts
+  // зберігаємо контакти в localStorage тільки коли змінюється масив контактів
   useEffect(() => {
     window.localStorage.setItem(CONTACTS, JSON.stringify(contacts));
-    console.log(JSON.parse(window.localStorage.getItem(CONTACTS)));
-    // filterOn(contacts);
-  }, [contacts]); // зберігаємо контакти в localStorage тільки коли змінюється масив контактів
+  }, [contacts]); 
 
 
 
@@ -57,9 +54,6 @@ const addContact = ({ name, number }) => {
   }
 }
 
-
-
-
 // DELETE - видаляємо контакт з масиву
 const onClickDelete = e => {
   e.preventDefault(); // Зупиняємо оновлення сторінки
@@ -70,7 +64,6 @@ const onClickDelete = e => {
 
 // FILTER - фільтруємо введені данні 
 const filterOn = () => {
-  console.log(contacts);
   // новий масив, який містить всі контакти, що містять рядок пошуку
   const filteredContacts = contacts.filter(
     contact => contact.name.toLowerCase().includes(filter.toLowerCase())
@@ -80,7 +73,6 @@ const filterOn = () => {
 
 
 // РЕНДНЕРІНГ сторінки
-
       return (
       <div className={css.container}>
         <h1 className={css.section_title}>Phonebook</h1>
